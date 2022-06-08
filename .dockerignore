@@ -1,0 +1,12 @@
+# Folders
+.git
+.venv
+.env
+venv
+env
+
+# Files
+.DS_Store
+.gitignore
+Dockerfile
+Jenkinsfile
