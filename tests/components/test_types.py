@@ -13,8 +13,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from search.components.metadata_items.views import router as metadata_item_router
+from search.components.types import StrEnum
 
-__all__ = [
-    'metadata_item_router',
-]
+
+class TestStrEnum:
+    def test_values_returns_list_of_enum_values(self):
+        class CustomStrEnum(StrEnum):
+            KEY1 = 'value1'
+            KEY2 = 'value2'
+
+        expected_values = ['value1', 'value2']
+
+        assert CustomStrEnum.values() == expected_values

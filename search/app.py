@@ -21,6 +21,7 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from opentelemetry import trace
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+from opentelemetry.instrumentation.elasticsearch import ElasticsearchInstrumentor
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.sdk.resources import SERVICE_NAME
 from opentelemetry.sdk.resources import Resource
@@ -29,7 +30,7 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 from search.components.exceptions import ServiceException
 from search.components.exceptions import UnhandledException
-from search.components.metadata_items import metadata_item_router
+from search.components.metadata_item import metadata_item_router
 from search.config import Settings
 from search.config import get_settings
 
@@ -113,6 +114,7 @@ def setup_tracing(app: FastAPI, settings: Settings) -> None:
     trace.set_tracer_provider(tracer_provider)
 
     FastAPIInstrumentor.instrument_app(app)
+    ElasticsearchInstrumentor().instrument()
 
     jaeger_exporter = JaegerExporter(
         agent_host_name=settings.OPEN_TELEMETRY_HOST, agent_port=settings.OPEN_TELEMETRY_PORT

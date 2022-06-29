@@ -13,34 +13,28 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from functools import lru_cache
+from typing import Any
+from typing import TypeVar
 
-from pydantic import BaseSettings
-from pydantic import Extra
+from pydantic import BaseModel
 
-
-class Settings(BaseSettings):
-    """Store service configuration settings."""
-
-    APP_NAME: str = 'search'
-    VERSION: str = '0.1.0'
-    HOST: str = '127.0.0.1'
-    PORT: int = 5064
-    WORKERS: int = 1
-
-    ELASTICSEARCH_URI: str = 'http://127.0.0.1:9201'
-
-    OPEN_TELEMETRY_ENABLED: bool = False
-    OPEN_TELEMETRY_HOST: str = '127.0.0.1'
-    OPEN_TELEMETRY_PORT: int = 6831
-
-    class Config:
-        env_file = '.env'
-        env_file_encoding = 'utf-8'
-        extra = Extra.ignore
+Model = TypeVar('Model', bound=BaseModel)
 
 
-@lru_cache(1)
-def get_settings() -> Settings:
-    settings = Settings()
-    return settings
+class ModelList(list):
+    """Store a list of models of the same type."""
+
+    def map_by_field(self, field: str, key_type: type | None = None) -> dict[Any, Any]:
+        """Create map using field argument as key with optional type casting."""
+
+        results = {}
+
+        for source in self:
+            key = getattr(source, field)
+
+            if key_type is not None:
+                key = key_type(key)
+
+            results[key] = source
+
+        return results

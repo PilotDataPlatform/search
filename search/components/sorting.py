@@ -13,12 +13,33 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from search.components.metadata_item import MetadataItem
-from search.components.models import Model
-from search.components.models import ModelList
+from typing import Any
 
-__all__ = [
-    'Model',
-    'ModelList',
-    'MetadataItem',
-]
+from pydantic import BaseModel
+
+from search.components.models import Model
+from search.components.types import StrEnum
+
+
+class SortingOrder(StrEnum):
+    """Available sorting orders."""
+
+    ASC = 'asc'
+    DESC = 'desc'
+
+
+class Sorting(BaseModel):
+    """Base sorting control parameters."""
+
+    field: str | None = None
+    order: SortingOrder
+
+    def __bool__(self) -> bool:
+        """Sorting considered valid when the field is specified."""
+
+        return self.field is not None
+
+    def apply(self, model: Model) -> list[dict[str, Any]]:
+        """Return sorting field with applied ordering that will be used as sort parameter."""
+
+        return [{self.field: self.order.value}]
