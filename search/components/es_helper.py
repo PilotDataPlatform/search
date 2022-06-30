@@ -99,7 +99,7 @@ def _multi_values(item: dict) -> dict:
 async def search(
     es_index: str, page: int, page_size: int, data: list[dict], sort_by: str = None, sort_type: str = None
 ):
-    url = config.ELASTIC_SEARCH_SERVICE + '{}/_search'.format(es_index)
+    url = config.ELASTIC_SEARCH_SERVICE + '/{}/_search'.format(es_index)
 
     search_fields = []
 

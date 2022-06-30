@@ -20,7 +20,6 @@ from common import LoggerFactory
 from fastapi import APIRouter
 
 from search.components.es_helper import search
-from search.components.exceptions import catch_internal
 from search.schemas.base import APIResponse
 from search.schemas.base import EAPIResponseCode
 
@@ -31,8 +30,7 @@ __logger = LoggerFactory(_API_NAMESPACE).get_logger()
 router = APIRouter(prefix='/activity-logs', tags=['Activity Logs Query'])
 
 
-@router.get('/', summary='list activity logs.')
-@catch_internal(_API_NAMESPACE)
+@router.get('', summary='list activity logs.')
 async def query_activity_logs(
     query: str,
     page: Optional[int] = 0,

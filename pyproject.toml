@@ -12,6 +12,7 @@ opentelemetry-exporter-jaeger = "1.11.1"
 opentelemetry-instrumentation = "0.30b1"
 opentelemetry-instrumentation-fastapi = "0.30b1"
 pilot-platform-common = "^0.0.35"
+python-json-logger = "2.0.2"
 pydantic = "1.9.1"
 uvicorn = { extras = ["standard"], version = "0.17.6" }
 
@@ -23,6 +24,7 @@ pytest-asyncio = "0.18.3"
 pytest-cov = "3.0.0"
 pytest-mock = "3.7.0"
 pytest-random-order = "1.0.4"
+pytest-httpx = "^0.21.0"
 testcontainers = "3.5.4"
 
 [tool.pytest.ini_options]

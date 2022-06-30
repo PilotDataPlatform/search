@@ -17,6 +17,5 @@
 class TestMetadataItemViews:
     async def test_list_metadata_items(self, client):
         response = await client.get('/v1/metadata-items/')
-
         assert response.status_code == 501
         assert 'Not Implemented' in response.text

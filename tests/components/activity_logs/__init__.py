@@ -12,13 +12,3 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-from starlette.config import environ
-
-pytest_plugins = [
-    'tests.fixtures.app',
-    'tests.fixtures.fake',
-    'tests.fixtures.jq',
-]
-
-environ['ELASTIC_SEARCH_SERVICE'] = 'http://ELASTIC_SEARCH_SERVICE'

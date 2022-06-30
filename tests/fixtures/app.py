@@ -79,5 +79,12 @@ def app(event_loop, settings) -> FastAPI:
 
 @pytest.fixture
 async def client(app) -> AsyncClient:
-    async with AsyncClient(app=app, base_url='https://') as client:
+    async with AsyncClient(app=app, base_url='https://search') as client:
         yield client
+
+
+@pytest.fixture
+def non_mocked_hosts() -> list:
+    return [
+        'search',
+    ]
