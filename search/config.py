@@ -24,6 +24,7 @@ class Settings(BaseSettings):
 
     APP_NAME: str = 'search'
     VERSION: str = '0.1.0'
+    ENV: str = ''
     HOST: str = '127.0.0.1'
     PORT: int = 5064
     WORKERS: int = 1
@@ -31,6 +32,8 @@ class Settings(BaseSettings):
     OPEN_TELEMETRY_ENABLED: bool = False
     OPEN_TELEMETRY_HOST: str = '127.0.0.1'
     OPEN_TELEMETRY_PORT: int = 6831
+
+    ELASTIC_SEARCH_SERVICE: str = ''
 
     class Config:
         env_file = '.env'
