@@ -15,11 +15,11 @@
 
 import asyncio
 from asyncio import AbstractEventLoop
-from contextlib import AbstractContextManager
-from typing import Any
+from pathlib import Path
 from typing import Callable
 
 import pytest
+import yaml
 from fastapi import FastAPI
 from httpx import AsyncClient
 
@@ -28,45 +28,42 @@ from search.config import Settings
 from search.config import get_settings
 
 
-class OverrideDependencies(AbstractContextManager):
-    """Temporarily override application dependencies using context manager."""
+@pytest.fixture(scope='session')
+def project_root() -> Path:
+    path = Path(__file__)
 
-    def __init__(self, app: FastAPI) -> None:
-        self.app = app
-        self.stashed_dependencies = {}
-        self.dependencies_to_override = {}
+    while path.name != 'search':
+        path = path.parent
 
-    def __call__(self, dependencies: dict[Callable[..., Any], Callable[..., Any]]) -> 'OverrideDependencies':
-        self.dependencies_to_override = dependencies
-        return self
-
-    def __enter__(self) -> 'OverrideDependencies':
-        self.stashed_dependencies = self.app.dependency_overrides.copy()
-        self.app.dependency_overrides.update(self.dependencies_to_override)
-        return self
-
-    def __exit__(self, *args: Any) -> None:
-        self.app.dependency_overrides.clear()
-        self.app.dependency_overrides.update(self.stashed_dependencies)
-        self.dependencies_to_override = {}
-        return None
+    yield path
 
 
-@pytest.fixture
-def override_dependencies(app) -> OverrideDependencies:
-    yield OverrideDependencies(app)
+@pytest.fixture(scope='session')
+def get_service_image(project_root) -> Callable[[str], str]:
+    with open(project_root / 'docker-compose.yaml') as file:
+        services = yaml.safe_load(file)['services']
+
+    def get_image(service_name: str) -> str:
+        return services[service_name]['image']
+
+    yield get_image
 
 
 @pytest.fixture(scope='session')
 def event_loop() -> AbstractEventLoop:
-    loop = asyncio.get_event_loop()
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
     yield loop
     loop.close()
 
 
 @pytest.fixture(scope='session')
-def settings() -> Settings:
-    settings = Settings()
+def settings(elasticsearch_uri) -> Settings:
+    settings = Settings(ELASTICSEARCH_URI=elasticsearch_uri)
     yield settings
 
 

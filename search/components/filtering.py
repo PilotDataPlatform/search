@@ -13,34 +13,27 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from functools import lru_cache
+from pydantic import BaseModel
 
-from pydantic import BaseSettings
-from pydantic import Extra
-
-
-class Settings(BaseSettings):
-    """Store service configuration settings."""
-
-    APP_NAME: str = 'search'
-    VERSION: str = '0.1.0'
-    HOST: str = '127.0.0.1'
-    PORT: int = 5064
-    WORKERS: int = 1
-
-    ELASTICSEARCH_URI: str = 'http://127.0.0.1:9201'
-
-    OPEN_TELEMETRY_ENABLED: bool = False
-    OPEN_TELEMETRY_HOST: str = '127.0.0.1'
-    OPEN_TELEMETRY_PORT: int = 6831
-
-    class Config:
-        env_file = '.env'
-        env_file_encoding = 'utf-8'
-        extra = Extra.ignore
+from search.components.models import Model
+from search.components.search_query import SearchQuery
 
 
-@lru_cache(1)
-def get_settings() -> Settings:
-    settings = Settings()
-    return settings
+class Filtering(BaseModel):
+    """Base filtering control parameters."""
+
+    def __bool__(self) -> bool:
+        """Filtering considered valid when at least one attribute has a value."""
+
+        values = self.dict()
+
+        for name in self.__fields__.keys():
+            if values[name] is not None:
+                return True
+
+        return False
+
+    def apply(self, search_query: SearchQuery, model: Model) -> None:
+        """Add filtering into search query."""
+
+        raise NotImplementedError

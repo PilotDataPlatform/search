@@ -14,7 +14,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 pytest_plugins = [
+    'tests.fixtures.components.metadata_item',
     'tests.fixtures.app',
+    'tests.fixtures.elasticsearch',
     'tests.fixtures.fake',
     'tests.fixtures.jq',
 ]

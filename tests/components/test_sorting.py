@@ -13,34 +13,17 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from functools import lru_cache
-
-from pydantic import BaseSettings
-from pydantic import Extra
+from search.components.sorting import Sorting
+from search.components.sorting import SortingOrder
 
 
-class Settings(BaseSettings):
-    """Store service configuration settings."""
+class TestSorting:
+    def test__bool__returns_true_when_field_attribute_is_set(self):
+        sorting = Sorting(field='value', order=SortingOrder.ASC)
 
-    APP_NAME: str = 'search'
-    VERSION: str = '0.1.0'
-    HOST: str = '127.0.0.1'
-    PORT: int = 5064
-    WORKERS: int = 1
+        assert bool(sorting) is True
 
-    ELASTICSEARCH_URI: str = 'http://127.0.0.1:9201'
+    def test__bool__returns_false_when_field_attribute_is_not_set(self):
+        sorting = Sorting(order=SortingOrder.DESC)
 
-    OPEN_TELEMETRY_ENABLED: bool = False
-    OPEN_TELEMETRY_HOST: str = '127.0.0.1'
-    OPEN_TELEMETRY_PORT: int = 6831
-
-    class Config:
-        env_file = '.env'
-        env_file_encoding = 'utf-8'
-        extra = Extra.ignore
-
-
-@lru_cache(1)
-def get_settings() -> Settings:
-    settings = Settings()
-    return settings
+        assert bool(sorting) is False

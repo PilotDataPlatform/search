@@ -13,10 +13,24 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from pydantic import BaseModel
 
-class TestMetadataItemViews:
-    async def test_list_metadata_items(self, client):
-        response = await client.get('/v1/metadata-items/')
+from search.components.models import ModelList
 
-        assert response.status_code == 501
-        assert 'Not Implemented' in response.text
+
+class TestModelList:
+    def test_map_by_field_returns_map_based_on_field_argument_as_key(self, fake):
+        class Model(BaseModel):
+            id: int
+
+        model_1 = Model(id=fake.pyint())
+        model_2 = Model(id=fake.pyint())
+
+        models = ModelList([model_1, model_2])
+
+        expected_map = {
+            str(model_1.id): model_1,
+            str(model_2.id): model_2,
+        }
+
+        assert models.map_by_field('id', str) == expected_map
