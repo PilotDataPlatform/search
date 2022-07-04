@@ -111,10 +111,10 @@ class CRUD:
 
         sort = None
         if sorting:
-            sort = sorting.apply(self.model)
+            sort = sorting.apply()
 
         if filtering:
-            filtering.apply(search_query, self.model)
+            filtering.apply(search_query)
 
         query = search_query.build()
 

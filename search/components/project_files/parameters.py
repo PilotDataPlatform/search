@@ -14,18 +14,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import datetime
-from datetime import time
-from datetime import timezone
 
-import faker
-import pytest
+from fastapi import Query
 
-
-class Faker(faker.Faker):
-    def date_this_year_midnight_time(self) -> datetime:
-        return datetime.combine(self.date_this_year(), time(tzinfo=timezone.utc))
+from search.components.metadata_item.types import SizeGroupBy
+from search.components.parameters import QueryParameters
 
 
-@pytest.fixture
-def fake() -> Faker:
-    yield Faker()
+class ProjectFilesSizeParameters(QueryParameters):
+    """Query parameters for querying project files size."""
+
+    from_date: datetime = Query(default=None, alias='from')
+    to_date: datetime = Query(default=None, alias='to')
+    time_zone: str = Query(default='+00:00', regex=r'^[-+][0-9]{2}:[0-9]{2}$')
+    group_by: SizeGroupBy = Query(default=SizeGroupBy.MONTH)

@@ -35,7 +35,7 @@ class SearchQuery:
     def match_range(self, field: str, **kwds: Any) -> None:
         self.must.append({'range': {field: kwds}})
 
-    def match_term(self, field: str, value: bool) -> None:
+    def match_term(self, field: str, value: str | int | bool) -> None:
         self.must.append({'term': {field: value}})
 
     def build(self) -> dict[str, Any]:

@@ -17,7 +17,6 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from search.components.models import Model
 from search.components.types import StrEnum
 
 
@@ -39,7 +38,7 @@ class Sorting(BaseModel):
 
         return self.field is not None
 
-    def apply(self, model: Model) -> list[dict[str, Any]]:
+    def apply(self) -> list[dict[str, Any]]:
         """Return sorting field with applied ordering that will be used as sort parameter."""
 
         return [{self.field: self.order.value}]

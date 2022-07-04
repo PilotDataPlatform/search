@@ -47,3 +47,17 @@ class MetadataItem(BaseModel):
 
     class Config:
         extra = Extra.ignore
+
+
+class MetadataItemSizeUsageDataset(BaseModel):
+    """Metadata item size usage dataset structure."""
+
+    label: int
+    values: list[int]
+
+
+class MetadataItemSizeUsage(BaseModel):
+    """Metadata item size usage model."""
+
+    labels: list[str]
+    datasets: list[MetadataItemSizeUsageDataset]
