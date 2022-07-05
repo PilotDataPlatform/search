@@ -13,19 +13,24 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from datetime import datetime
-from datetime import time
-from datetime import timezone
-
-import faker
-import pytest
+from search.components.schemas import BaseSchema
 
 
-class Faker(faker.Faker):
-    def date_this_year_midnight_time(self) -> datetime:
-        return datetime.combine(self.date_this_year(), time(tzinfo=timezone.utc))
+class ProjectFilesSizeDatasetSchema(BaseSchema):
+    """General project files size datasets schema."""
+
+    label: int
+    values: list[int]
 
 
-@pytest.fixture
-def fake() -> Faker:
-    yield Faker()
+class ProjectFilesSizeSchema(BaseSchema):
+    """General project files size schema."""
+
+    labels: list[str]
+    datasets: list[ProjectFilesSizeDatasetSchema]
+
+
+class ProjectFilesSizeResponseSchema(BaseSchema):
+    """Default schema for project files size response."""
+
+    data: ProjectFilesSizeSchema

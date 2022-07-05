@@ -16,9 +16,14 @@
 from typing import Any
 
 from search.components.crud import CRUD
+from search.components.metadata_item.crud.size_usage import SizeUsageHandler
+from search.components.metadata_item.filtering import MetadataItemProjectSizeUsageFiltering
 from search.components.metadata_item.models import MetadataItem
+from search.components.metadata_item.models import MetadataItemSizeUsage
 from search.components.metadata_item.pagination import MetadataItemPage
+from search.components.metadata_item.types import SizeGroupBy
 from search.components.pagination import Pagination
+from search.components.search_query import SearchQuery
 
 
 class MetadataItemCRUD(CRUD):
@@ -50,3 +55,21 @@ class MetadataItemCRUD(CRUD):
         }
 
         return MetadataItemPage(pagination=pagination, count=count, entries=entries, total_per_zone=total_per_zone)
+
+    async def get_project_size_usage(
+        self, filtering: MetadataItemProjectSizeUsageFiltering, time_zone: str, group_by: SizeGroupBy
+    ) -> MetadataItemSizeUsage:
+        """Get aggregated project storage usage filtered by dates and grouped into separate buckets."""
+
+        search_query = SearchQuery()
+        filtering.apply(search_query)
+        query = search_query.build()
+
+        size_usage_handler = SizeUsageHandler(
+            from_date=filtering.from_date, to_date=filtering.to_date, time_zone=time_zone, group_by=group_by
+        )
+        aggregations = size_usage_handler.get_aggregations()
+
+        result = await self._search(query=query, size=0, aggregations=aggregations)
+
+        return size_usage_handler.process_search_result(result)

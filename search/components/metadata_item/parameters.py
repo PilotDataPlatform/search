@@ -36,6 +36,9 @@ class MetadataItemFilterParameters(FilterParameters):
 
     name: str | None = Query(default=None)
     owner: str | None = Query(default=None)
+    zone: int | None = Query(default=None)
+    container_code: str | None = Query(default=None)
+    container_type: str | None = Query(default=None)
     created_time_start: datetime | None = Query(default=None)
     created_time_end: datetime | None = Query(default=None)
     size_gte: PositiveInt | None = Query(default=None)
@@ -46,6 +49,9 @@ class MetadataItemFilterParameters(FilterParameters):
         return MetadataItemFiltering(
             name=self.name,
             owner=self.owner,
+            zone=self.zone,
+            container_code=self.container_code,
+            container_type=self.container_type,
             created_time_start=self.created_time_start,
             created_time_end=self.created_time_end,
             size_gte=self.size_gte,

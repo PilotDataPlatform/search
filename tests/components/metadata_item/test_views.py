@@ -85,7 +85,7 @@ class TestMetadataItemViews:
         assert received_total == 3
 
     @pytest.mark.parametrize('parameter', ['name', 'owner'])
-    async def test_list_metadata_items_returns_metadata_item_filtered_by_parameter_full_match(
+    async def test_list_metadata_items_returns_metadata_item_filtered_by_parameter_full_text_match(
         self, parameter, client, jq, metadata_item_factory
     ):
         created_metadata_items = await metadata_item_factory.bulk_create(3)
@@ -118,10 +118,27 @@ class TestMetadataItemViews:
         assert received_ids == [str(metadata_item.id)]
         assert received_total == 1
 
+    @pytest.mark.parametrize('parameter', ['zone', 'container_code', 'container_type'])
+    async def test_list_metadata_items_returns_metadata_item_filtered_by_parameter_match(
+        self, parameter, client, jq, fake, metadata_item_factory
+    ):
+        created_metadata_items = await metadata_item_factory.bulk_create(3)
+        value = getattr(created_metadata_items[0], parameter)
+        expected_ids = {item.id for item in created_metadata_items if getattr(item, parameter) == value}
+
+        response = await client.get('/v1/metadata-items/', params={parameter: value})
+
+        body = jq(response)
+        received_ids = body('.result[].id').all()
+        received_total = body('.total').first()
+
+        assert set(received_ids) == expected_ids
+        assert received_total == len(expected_ids)
+
     async def test_list_metadata_items_returns_metadata_items_filtered_by_created_time_parameters(
         self, client, jq, fake, metadata_item_factory
     ):
-        today = datetime.now()
+        today = datetime.utcnow()
         week_ago = today - timedelta(days=7)
         two_weeks_ago = today - timedelta(days=14)
 
@@ -184,3 +201,18 @@ class TestMetadataItemViews:
 
         assert set(received_ids) == set(expected_ids)
         assert received_total == 2
+
+    async def test_list_metadata_items_returns_total_per_zone_attribute_with_count_of_documents_in_each_zone(
+        self, client, jq, metadata_item_factory
+    ):
+        expected_total_per_zone = {}
+        for zone in range(3):
+            await metadata_item_factory.create(zone=zone)
+            expected_total_per_zone[str(zone)] = 1
+
+        response = await client.get('/v1/metadata-items/')
+
+        body = jq(response)
+        received_total_per_zone = body('.total_per_zone').first()
+
+        assert received_total_per_zone == expected_total_per_zone

@@ -59,7 +59,7 @@ class MetadataItemFactory(BaseFactory):
             type_ = random.choice(['file', 'folder'])
 
         if zone is ...:
-            zone = self.fake.pyint(0, 2)
+            zone = self.fake.pyint(0, 1)
 
         if name is ...:
             name = f'{unique_prefix}-{self.fake.file_name()}'.lower()

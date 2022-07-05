@@ -15,7 +15,6 @@
 
 from pydantic import BaseModel
 
-from search.components.models import Model
 from search.components.search_query import SearchQuery
 
 
@@ -33,7 +32,7 @@ class Filtering(BaseModel):
 
         return False
 
-    def apply(self, search_query: SearchQuery, model: Model) -> None:
+    def apply(self, search_query: SearchQuery) -> None:
         """Add filtering into search query."""
 
         raise NotImplementedError
