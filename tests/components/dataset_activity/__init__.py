@@ -12,12 +12,3 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-pytest_plugins = [
-    'tests.fixtures.components.metadata_item',
-    'tests.fixtures.components.dataset_activity',
-    'tests.fixtures.app',
-    'tests.fixtures.elasticsearch',
-    'tests.fixtures.fake',
-    'tests.fixtures.jq',
-]

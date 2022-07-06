@@ -13,11 +13,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pytest_plugins = [
-    'tests.fixtures.components.metadata_item',
-    'tests.fixtures.components.dataset_activity',
-    'tests.fixtures.app',
-    'tests.fixtures.elasticsearch',
-    'tests.fixtures.fake',
-    'tests.fixtures.jq',
-]
+from search.components.crud import CRUD
+from search.components.dataset_activity.models import DatasetActivity
+
+
+class DatasetActivityCRUD(CRUD):
+    """CRUD for managing dataset activity logs."""
+
+    index = 'dataset-activity-logs'
+    model = DatasetActivity

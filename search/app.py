@@ -28,6 +28,7 @@ from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
+from search.components.dataset_activity import dataset_activity_router
 from search.components.exceptions import ServiceException
 from search.components.exceptions import UnhandledException
 from search.components.metadata_item import metadata_item_router
@@ -62,6 +63,7 @@ def setup_routers(app: FastAPI) -> None:
     """Configure the application routers."""
 
     app.include_router(metadata_item_router, prefix='/v1')
+    app.include_router(dataset_activity_router, prefix='/v1')
     app.include_router(project_files_router, prefix='/v1')
 
 

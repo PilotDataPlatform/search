@@ -13,11 +13,30 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pytest_plugins = [
-    'tests.fixtures.components.metadata_item',
-    'tests.fixtures.components.dataset_activity',
-    'tests.fixtures.app',
-    'tests.fixtures.elasticsearch',
-    'tests.fixtures.fake',
-    'tests.fixtures.jq',
-]
+from datetime import datetime
+
+from pydantic import BaseModel
+from pydantic import Extra
+
+
+class DatasetActivityChange(BaseModel):
+    """Dataset activity change model."""
+
+    property: str
+    old_value: str
+    new_value: str
+
+
+class DatasetActivity(BaseModel):
+    """Dataset activity elasticsearch document model."""
+
+    activity_type: str
+    activity_time: datetime
+    container_code: str
+    version: str
+    target_name: str
+    user: str
+    changes: list[DatasetActivityChange]
+
+    class Config:
+        extra = Extra.ignore

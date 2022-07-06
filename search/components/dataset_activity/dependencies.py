@@ -13,11 +13,16 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pytest_plugins = [
-    'tests.fixtures.components.metadata_item',
-    'tests.fixtures.components.dataset_activity',
-    'tests.fixtures.app',
-    'tests.fixtures.elasticsearch',
-    'tests.fixtures.fake',
-    'tests.fixtures.jq',
-]
+from elasticsearch import AsyncElasticsearch
+from fastapi import Depends
+
+from search.components.dataset_activity.crud import DatasetActivityCRUD
+from search.dependencies import get_elasticsearch_client
+
+
+def get_dataset_activity_crud(
+    elasticsearch_client: AsyncElasticsearch = Depends(get_elasticsearch_client),
+) -> DatasetActivityCRUD:
+    """Return an instance of DatasetActivityCRUD as a dependency."""
+
+    return DatasetActivityCRUD(elasticsearch_client)
