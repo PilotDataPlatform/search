@@ -29,7 +29,7 @@ from tests.fixtures.components._base_factory import BaseFactory
 class DatasetActivityFactory(BaseFactory):
     """Create dataset activity related entries for testing purposes."""
 
-    def generate(  # noqa: C901
+    def generate(
         self,
         activity_type: str = ...,
         activity_time: datetime = ...,
@@ -56,7 +56,7 @@ class DatasetActivityFactory(BaseFactory):
             target_name = '.'.join(self.fake.words(3)).lower()
 
         if user is ...:
-            user = self.fake.word().lower()
+            user = f'{self.fake.pystr()}-{self.fake.first_name()}'.lower()
 
         if changes is ...:
             changes = []

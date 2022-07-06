@@ -30,7 +30,7 @@ class DatasetActivityFiltering(Filtering):
     target_name: str | None = None
     user: str | None = None
 
-    def apply(self, search_query: SearchQuery) -> None:  # noqa: C901
+    def apply(self, search_query: SearchQuery) -> None:
         """Add filtering into search query."""
 
         if self.activity_type:

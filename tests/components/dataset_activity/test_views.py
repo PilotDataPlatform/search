@@ -23,7 +23,7 @@ class TestDatasetActivityLogsViews:
     async def test_list_dataset_activity_returns_list_of_existing_dataset_activities(
         self, client, jq, dataset_activity_factory
     ):
-        _ = await dataset_activity_factory.bulk_create(3)
+        await dataset_activity_factory.bulk_create(3)
 
         response = await client.get('/v1/dataset-activity-logs/')
 
@@ -75,15 +75,15 @@ class TestDatasetActivityLogsViews:
         received_ccs = body('.result[].container_code').all()
         received_total = body('.total').first()
 
-        assert received_ccs == [str(dataset_activity.container_code)]
+        assert received_ccs == [dataset_activity.container_code]
         assert received_total == 1
 
     @pytest.mark.parametrize('parameter', ['version', 'target_name', 'user'])
     async def test_list_dataset_activities_returns_dataset_activity_filtered_by_parameter_partial_match(
         self, parameter, client, jq, fake, dataset_activity_factory
     ):
-        created_dataset_activitys = await dataset_activity_factory.bulk_create(3)
-        dataset_activity = created_dataset_activitys.pop()
+        created_dataset_activities = await dataset_activity_factory.bulk_create(3)
+        dataset_activity = created_dataset_activities.pop()
         value = getattr(dataset_activity, parameter)
         lookup = value.replace(value[5:], '%')
 
@@ -93,16 +93,16 @@ class TestDatasetActivityLogsViews:
         received_ccs = body('.result[].container_code').all()
         received_total = body('.total').first()
 
-        assert received_ccs == [str(dataset_activity.container_code)]
+        assert received_ccs == [dataset_activity.container_code]
         assert received_total == 1
 
     @pytest.mark.parametrize('parameter', ['activity_type', 'container_code'])
     async def test_list_dataset_activities_returns_dataset_activity_filtered_by_parameter_match(
         self, parameter, client, jq, fake, dataset_activity_factory
     ):
-        created_dataset_activitys = await dataset_activity_factory.bulk_create(3)
-        value = getattr(created_dataset_activitys[0], parameter)
-        expected_ccs = {item.container_code for item in created_dataset_activitys if getattr(item, parameter) == value}
+        created_dataset_activities = await dataset_activity_factory.bulk_create(3)
+        value = getattr(created_dataset_activities[0], parameter)
+        expected_ccs = {item.container_code for item in created_dataset_activities if getattr(item, parameter) == value}
 
         response = await client.get('/v1/dataset-activity-logs/', params={parameter: value})
 

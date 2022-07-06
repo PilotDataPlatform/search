@@ -32,7 +32,7 @@ async def list_dataset_activity_logs(
     filter_parameters: DatasetActivityFilterParameters = Depends(),
     sort_parameters: SortParameters.with_sort_by_fields(DatasetActivitySortByFields) = Depends(),
     page_parameters: PageParameters = Depends(),
-    metadata_item_crud: DatasetActivityCRUD = Depends(get_dataset_activity_crud),
+    dataset_activity_crud: DatasetActivityCRUD = Depends(get_dataset_activity_crud),
 ) -> DatasetActivityListResponseSchema:
     """List dataset activity logs."""
 
@@ -40,7 +40,7 @@ async def list_dataset_activity_logs(
     sorting = sort_parameters.to_sorting()
     pagination = page_parameters.to_pagination()
 
-    page = await metadata_item_crud.list(pagination, sorting, filtering)
+    page = await dataset_activity_crud.list(pagination, sorting, filtering)
 
     response = DatasetActivityListResponseSchema.from_page(page)
 

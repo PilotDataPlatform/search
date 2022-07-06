@@ -13,11 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import annotations
-
 from datetime import datetime
 
-from search.components.pagination import PageType
 from search.components.schemas import BaseSchema
 from search.components.schemas import ListResponseSchema
 
@@ -43,15 +40,6 @@ class DatasetActivitySchema(BaseSchema):
 
 
 class DatasetActivityListResponseSchema(ListResponseSchema):
-    """Default schema for multiple metadata items in response."""
+    """Default schema for multiple dataset activity in response."""
 
     result: list[DatasetActivitySchema]
-
-    @classmethod
-    def from_page(cls, page: PageType) -> DatasetActivityListResponseSchema:
-        return cls(
-            num_of_pages=page.total_pages,
-            page=page.number,
-            total=page.count,
-            result=page.entries,
-        )
