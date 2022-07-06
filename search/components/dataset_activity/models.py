@@ -13,14 +13,30 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from search.components.dataset_activity import DatasetActivity
-from search.components.metadata_item import MetadataItem
-from search.components.models import Model
-from search.components.models import ModelList
+from datetime import datetime
 
-__all__ = [
-    'Model',
-    'ModelList',
-    'MetadataItem',
-    'DatasetActivity',
-]
+from pydantic import BaseModel
+from pydantic import Extra
+
+
+class DatasetActivityChange(BaseModel):
+    """Dataset activity change model."""
+
+    property: str
+    old_value: str
+    new_value: str
+
+
+class DatasetActivity(BaseModel):
+    """Dataset activity elasticsearch document model."""
+
+    activity_type: str
+    activity_time: datetime
+    container_code: str
+    version: str
+    target_name: str
+    user: str
+    changes: list[DatasetActivityChange]
+
+    class Config:
+        extra = Extra.ignore

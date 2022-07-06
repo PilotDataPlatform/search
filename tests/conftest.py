@@ -15,6 +15,7 @@
 
 pytest_plugins = [
     'tests.fixtures.components.metadata_item',
+    'tests.fixtures.components.dataset_activity',
     'tests.fixtures.app',
     'tests.fixtures.elasticsearch',
     'tests.fixtures.fake',

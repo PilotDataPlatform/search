@@ -13,14 +13,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from search.components.dataset_activity import DatasetActivity
-from search.components.metadata_item import MetadataItem
-from search.components.models import Model
-from search.components.models import ModelList
+from search.components.crud import CRUD
+from search.components.dataset_activity.models import DatasetActivity
 
-__all__ = [
-    'Model',
-    'ModelList',
-    'MetadataItem',
-    'DatasetActivity',
-]
+
+class DatasetActivityCRUD(CRUD):
+    """CRUD for managing dataset activity logs."""
+
+    index = 'dataset-activity-logs'
+    model = DatasetActivity
