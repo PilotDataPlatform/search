@@ -18,4 +18,9 @@ from search.components.metadata_item import MetadataItem
 from search.components.models import Model
 from search.components.models import ModelList
 
-__all__ = ['Model', 'ModelList', 'MetadataItem', 'DatasetActivity']
+__all__ = [
+    'Model',
+    'ModelList',
+    'MetadataItem',
+    'DatasetActivity',
+]
