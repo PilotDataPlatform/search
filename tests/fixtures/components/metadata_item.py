@@ -32,7 +32,7 @@ class MetadataItemFactory(BaseFactory):
     def generate(  # noqa: C901
         self,
         id_: str = ...,
-        parent_path: str = ...,
+        parent_path: str | None = ...,
         type_: str = ...,
         zone: int = ...,
         name: str = ...,
@@ -115,7 +115,7 @@ class MetadataItemFactory(BaseFactory):
     async def create(
         self,
         id_: str = ...,
-        parent_path: str = ...,
+        parent_path: str | None = ...,
         type_: str = ...,
         zone: int = ...,
         name: str = ...,
@@ -159,7 +159,7 @@ class MetadataItemFactory(BaseFactory):
         self,
         number: int,
         id_: str = ...,
-        parent_path: str = ...,
+        parent_path: str | None = ...,
         type_: str = ...,
         zone: int = ...,
         name: str = ...,

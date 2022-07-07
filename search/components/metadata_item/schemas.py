@@ -32,7 +32,7 @@ class MetadataItemSchema(BaseSchema):
     """General metadata item schema."""
 
     id: str
-    parent_path: str
+    parent_path: str | None
     type: str
     zone: int
     name: str
