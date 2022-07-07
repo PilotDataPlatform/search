@@ -645,7 +645,7 @@ pytest = ">=3.0.0"
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 
@@ -906,7 +906,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "a36e46d7f2cf8caa535d02d23b51c453d2ee27098899f1a71c5ef39576069240"
+content-hash = "06d29dcef42d2a506699048bd348858a35b05567daf956cd4e48504a179593b9"
 
 [metadata.files]
 aiohttp = [

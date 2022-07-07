@@ -13,6 +13,7 @@ opentelemetry-instrumentation = "0.30b1"
 opentelemetry-instrumentation-fastapi = "0.30b1"
 opentelemetry-instrumentation-elasticsearch = "0.30b1"
 pydantic = "1.9.1"
+python-dateutil = "2.8.2"
 uvicorn = { extras = ["standard"], version = "0.17.6" }
 
 [tool.poetry.dev-dependencies]
@@ -24,7 +25,6 @@ pytest-asyncio = "0.18.3"
 pytest-cov = "3.0.0"
 pytest-mock = "3.7.0"
 pytest-random-order = "1.0.4"
-python-dateutil = "2.8.2"
 testcontainers = "3.5.4"
 
 [tool.pytest.ini_options]
