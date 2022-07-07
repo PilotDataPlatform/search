@@ -20,5 +20,5 @@ from search.components.dataset_activity.models import DatasetActivity
 class DatasetActivityCRUD(CRUD):
     """CRUD for managing dataset activity logs."""
 
-    index = 'dataset-activity-logs'
+    index = 'datasets-activity-logs'
     model = DatasetActivity
