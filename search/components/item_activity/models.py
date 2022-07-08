@@ -13,10 +13,36 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from datetime import datetime
+
+from pydantic import BaseModel
+
+from search.components.models import ContainerType
 from search.components.types import StrEnum
 
 
-class SizeGroupBy(StrEnum):
-    """Store possible group by options for metadata items."""
+class ItemActivityType(StrEnum):
+    """Store all available item activity types."""
 
-    MONTH = 'month'
+    DOWNLOAD = 'download'
+    UPLOAD = 'upload'
+    DELETE = 'delete'
+    COPY = 'copy'
+
+
+class ItemActivity(BaseModel):
+    """Item activity elasticsearch document model."""
+
+    pk: str
+    id: str
+    activity_type: ItemActivityType
+    activity_time: datetime
+    container_code: str
+    container_type: ContainerType
+
+
+class ItemActivityTransferStatistics(BaseModel):
+    """Item activity transfer statistics model."""
+
+    uploaded: int
+    downloaded: int

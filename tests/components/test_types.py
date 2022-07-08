@@ -17,6 +17,12 @@ from search.components.types import StrEnum
 
 
 class TestStrEnum:
+    def test__str___returns_enum_value(self):
+        class CustomStrEnum(StrEnum):
+            KEY = 'value'
+
+        assert str(CustomStrEnum.KEY) == 'value'
+
     def test_values_returns_list_of_enum_values(self):
         class CustomStrEnum(StrEnum):
             KEY1 = 'value1'

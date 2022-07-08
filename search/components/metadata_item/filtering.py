@@ -16,6 +16,7 @@
 from datetime import datetime
 
 from search.components.filtering import Filtering
+from search.components.models import ContainerType
 from search.components.search_query import SearchQuery
 
 
@@ -26,7 +27,7 @@ class MetadataItemFiltering(Filtering):
     owner: str | None = None
     zone: int | None = None
     container_code: str | None = None
-    container_type: str | None = None
+    container_type: ContainerType | None = None
     created_time_start: datetime | None = None
     created_time_end: datetime | None = None
     size_gte: int | None = None
@@ -49,7 +50,7 @@ class MetadataItemFiltering(Filtering):
             search_query.match_term('container_code', self.container_code)
 
         if self.container_type:
-            search_query.match_term('container_type', self.container_type)
+            search_query.match_term('container_type', self.container_type.value)
 
         if self.created_time_start:
             search_query.match_range('created_time', gte=self.created_time_start.isoformat())
@@ -77,6 +78,6 @@ class MetadataItemProjectSizeUsageFiltering(Filtering):
     def apply(self, search_query: SearchQuery) -> None:
         """Add filtering into search query."""
 
-        search_query.match_term('container_type', 'project')
+        search_query.match_term('container_type', ContainerType.PROJECT.value)
         search_query.match_term('container_code', self.project_code)
         search_query.match_range('created_time', gte=self.from_date.isoformat(), lt=self.to_date.isoformat())

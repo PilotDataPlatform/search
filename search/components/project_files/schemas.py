@@ -34,3 +34,24 @@ class ProjectFilesSizeResponseSchema(BaseSchema):
     """Default schema for project files size response."""
 
     data: ProjectFilesSizeSchema
+
+
+class ProjectFilesTotalStatistics(BaseSchema):
+    """Project files total statistics schema."""
+
+    total_count: int
+    total_size: int
+
+
+class ProjectFilesTodayActivity(BaseSchema):
+    """Project files today's activity schema."""
+
+    today_uploaded: int
+    today_downloaded: int
+
+
+class ProjectFilesStatisticsResponseSchema(BaseSchema):
+    """Default schema for project files statistics response."""
+
+    files: ProjectFilesTotalStatistics
+    activity: ProjectFilesTodayActivity

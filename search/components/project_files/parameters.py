@@ -17,14 +17,16 @@ from datetime import datetime
 
 from fastapi import Query
 
-from search.components.metadata_item.types import SizeGroupBy
+from search.components.metadata_item.models import SizeGroupBy
 from search.components.parameters import QueryParameters
+
+TIME_ZONE_REGEX = r'^[-+][0-9]{2}:[0-9]{2}$'
 
 
 class ProjectFilesSizeParameters(QueryParameters):
     """Query parameters for querying project files size."""
 
-    from_date: datetime = Query(default=None, alias='from')
-    to_date: datetime = Query(default=None, alias='to')
-    time_zone: str = Query(default='+00:00', regex=r'^[-+][0-9]{2}:[0-9]{2}$')
+    from_date: datetime = Query(alias='from')
+    to_date: datetime = Query(alias='to')
+    time_zone: str = Query(default='+00:00', regex=TIME_ZONE_REGEX)
     group_by: SizeGroupBy = Query(default=SizeGroupBy.MONTH)

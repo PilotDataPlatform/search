@@ -16,7 +16,6 @@
 from datetime import datetime
 
 from pydantic import BaseModel
-from pydantic import Extra
 
 
 class DatasetActivityChange(BaseModel):
@@ -37,6 +36,3 @@ class DatasetActivity(BaseModel):
     target_name: str
     user: str
     changes: list[DatasetActivityChange]
-
-    class Config:
-        extra = Extra.ignore

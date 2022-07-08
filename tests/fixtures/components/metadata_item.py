@@ -22,7 +22,9 @@ import pytest
 from search.components import MetadataItem
 from search.components import ModelList
 from search.components.metadata_item.crud import MetadataItemCRUD
+from search.components.metadata_item.models import MetadataItemType
 from search.components.metadata_item.schemas import MetadataItemSchema
+from search.components.models import ContainerType
 from tests.fixtures.components._base_factory import BaseFactory
 
 
@@ -39,7 +41,7 @@ class MetadataItemFactory(BaseFactory):
         size: int = ...,
         owner: str = ...,
         container_code: str = ...,
-        container_type: str = ...,
+        container_type: ContainerType = ...,
         created_time: datetime = ...,
         last_updated_time: datetime = ...,
         tags: list[str] = ...,
@@ -56,7 +58,7 @@ class MetadataItemFactory(BaseFactory):
             parent_path = '.'.join(self.fake.words(4)).lower()
 
         if type_ is ...:
-            type_ = random.choice(['file', 'folder'])
+            type_ = random.choice(MetadataItemType.values())
 
         if zone is ...:
             zone = self.fake.pyint(0, 1)
@@ -66,6 +68,8 @@ class MetadataItemFactory(BaseFactory):
 
         if size is ...:
             size = self.fake.pyint()
+            if type_ == MetadataItemType.FOLDER:
+                size = 0
 
         if owner is ...:
             owner = f'{unique_prefix}-{self.fake.first_name()}'.lower()
@@ -74,7 +78,7 @@ class MetadataItemFactory(BaseFactory):
             container_code = self.fake.word().lower()
 
         if container_type is ...:
-            container_type = 'project'
+            container_type = ContainerType.PROJECT
 
         if created_time is ...:
             created_time = self.fake.past_datetime()
@@ -122,7 +126,7 @@ class MetadataItemFactory(BaseFactory):
         size: int = ...,
         owner: str = ...,
         container_code: str = ...,
-        container_type: str = ...,
+        container_type: ContainerType = ...,
         created_time: datetime = ...,
         last_updated_time: datetime = ...,
         tags: list[str] = ...,
@@ -166,7 +170,7 @@ class MetadataItemFactory(BaseFactory):
         size: int = ...,
         owner: str = ...,
         container_code: str = ...,
-        container_type: str = ...,
+        container_type: ContainerType = ...,
         created_time: datetime = ...,
         last_updated_time: datetime = ...,
         tags: list[str] = ...,

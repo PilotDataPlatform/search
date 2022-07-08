@@ -19,6 +19,7 @@ from fastapi import Query
 from pydantic import PositiveInt
 
 from search.components.metadata_item.filtering import MetadataItemFiltering
+from search.components.models import ContainerType
 from search.components.parameters import FilterParameters
 from search.components.parameters import SortByFields
 
@@ -38,7 +39,7 @@ class MetadataItemFilterParameters(FilterParameters):
     owner: str | None = Query(default=None)
     zone: int | None = Query(default=None)
     container_code: str | None = Query(default=None)
-    container_type: str | None = Query(default=None)
+    container_type: ContainerType | None = Query(default=None)
     created_time_start: datetime | None = Query(default=None)
     created_time_end: datetime | None = Query(default=None)
     size_gte: PositiveInt | None = Query(default=None)
