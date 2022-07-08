@@ -13,15 +13,24 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from datetime import datetime
+
 from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import Query
 
+from search.components.item_activity.crud import ItemActivityCRUD
+from search.components.item_activity.dependencies import get_item_activity_crud
 from search.components.metadata_item.crud import MetadataItemCRUD
 from search.components.metadata_item.dependencies import get_metadata_item_crud
 from search.components.metadata_item.filtering import MetadataItemProjectSizeUsageFiltering
+from search.components.project_files.parameters import TIME_ZONE_REGEX
 from search.components.project_files.parameters import ProjectFilesSizeParameters
 from search.components.project_files.schemas import ProjectFilesSizeResponseSchema
 from search.components.project_files.schemas import ProjectFilesSizeSchema
+from search.components.project_files.schemas import ProjectFilesStatisticsResponseSchema
+from search.components.project_files.schemas import ProjectFilesTodayActivity
+from search.components.project_files.schemas import ProjectFilesTotalStatistics
 
 router = APIRouter(prefix='/project-files', tags=['Project Files'])
 
@@ -45,3 +54,33 @@ async def get_project_size_usage(
     )
 
     return ProjectFilesSizeResponseSchema(data=ProjectFilesSizeSchema(**project_size_usage.dict()))
+
+
+@router.get(
+    '/{project_code}/statistics',
+    summary='Get files and transfer activity statistics in the project.',
+    response_model=ProjectFilesStatisticsResponseSchema,
+)
+async def get_project_statistics(
+    project_code: str,
+    time_zone: str = Query(default='+00:00', regex=TIME_ZONE_REGEX),
+    metadata_item_crud: MetadataItemCRUD = Depends(get_metadata_item_crud),
+    item_activity_crud: ItemActivityCRUD = Depends(get_item_activity_crud),
+) -> ProjectFilesStatisticsResponseSchema:
+    """Get files and transfer activity statistics in a project for the period."""
+
+    now = datetime.utcnow()
+
+    statistics = await metadata_item_crud.get_project_statistics(project_code)
+    transfer_statistics = await item_activity_crud.get_project_transfer_statistics(project_code, now, time_zone)
+
+    return ProjectFilesStatisticsResponseSchema(
+        files=ProjectFilesTotalStatistics(
+            total_count=statistics.count,
+            total_size=statistics.size,
+        ),
+        activity=ProjectFilesTodayActivity(
+            today_uploaded=transfer_statistics.uploaded,
+            today_downloaded=transfer_statistics.downloaded,
+        ),
+    )

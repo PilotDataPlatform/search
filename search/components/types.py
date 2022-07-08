@@ -19,6 +19,9 @@ from enum import Enum
 class StrEnum(str, Enum):
     """Enum where members suppose to be strings."""
 
+    def __str__(self) -> str:
+        return self.value
+
     @property
     def value(self) -> str:
         return self._value_

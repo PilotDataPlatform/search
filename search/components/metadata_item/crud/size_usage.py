@@ -22,7 +22,7 @@ from pydantic import BaseModel
 
 from search.components.metadata_item.models import MetadataItemSizeUsage
 from search.components.metadata_item.models import MetadataItemSizeUsageDataset
-from search.components.metadata_item.types import SizeGroupBy
+from search.components.metadata_item.models import SizeGroupBy
 
 
 class SizeUsageHandler(BaseModel):

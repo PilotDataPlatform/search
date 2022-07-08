@@ -13,12 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pytest_plugins = [
-    'tests.fixtures.components.dataset_activity',
-    'tests.fixtures.components.item_activity',
-    'tests.fixtures.components.metadata_item',
-    'tests.fixtures.app',
-    'tests.fixtures.elasticsearch',
-    'tests.fixtures.fake',
-    'tests.fixtures.jq',
+from search.components.item_activity.models import ItemActivity
+
+__all__ = [
+    'ItemActivity',
 ]

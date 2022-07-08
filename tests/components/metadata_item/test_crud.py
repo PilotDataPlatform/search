@@ -16,9 +16,11 @@
 from dateutil.relativedelta import relativedelta
 
 from search.components.metadata_item.filtering import MetadataItemProjectSizeUsageFiltering
+from search.components.metadata_item.models import MetadataItemSizeStatistics
 from search.components.metadata_item.models import MetadataItemSizeUsage
 from search.components.metadata_item.models import MetadataItemSizeUsageDataset
-from search.components.metadata_item.types import SizeGroupBy
+from search.components.metadata_item.models import MetadataItemType
+from search.components.metadata_item.models import SizeGroupBy
 
 
 class TestMetadataItemCRUD:
@@ -121,3 +123,16 @@ class TestMetadataItemCRUD:
         result = await metadata_item_crud.get_project_size_usage(filtering, '+00:00', SizeGroupBy.MONTH)
 
         assert result == MetadataItemSizeUsage(labels=[], datasets=[])
+
+    async def test_get_project_statistics_returns_total_count_and_size(
+        self, fake, metadata_item_crud, metadata_item_factory
+    ):
+        project_code = fake.word().lower()
+        created_metadata_items = await metadata_item_factory.bulk_create(
+            3, type_=MetadataItemType.FILE, container_code=project_code, size=fake.pyint(1024**2, 1024**3)
+        )
+        expected_size = sum(item.size for item in created_metadata_items)
+
+        result = await metadata_item_crud.get_project_statistics(project_code)
+
+        assert result == MetadataItemSizeStatistics(count=3, size=expected_size)

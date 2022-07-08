@@ -12,7 +12,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         build-essential
 
-RUN pip install --no-cache-dir poetry==1.1.12
+RUN pip install --no-cache-dir poetry==$POETRY_VERSION
 
 WORKDIR /app
 

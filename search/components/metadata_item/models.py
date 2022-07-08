@@ -16,7 +16,22 @@
 from datetime import datetime
 
 from pydantic import BaseModel
-from pydantic import Extra
+
+from search.components.models import ContainerType
+from search.components.types import StrEnum
+
+
+class SizeGroupBy(StrEnum):
+    """Store possible group by options for metadata items."""
+
+    MONTH = 'month'
+
+
+class MetadataItemType(StrEnum):
+    """Store all metadata item types."""
+
+    FILE = 'file'
+    FOLDER = 'folder'
 
 
 class MetadataItemAttribute(BaseModel):
@@ -37,16 +52,13 @@ class MetadataItem(BaseModel):
     size: int
     owner: str
     container_code: str
-    container_type: str
+    container_type: ContainerType
     created_time: datetime
     last_updated_time: datetime
     tags: list[str]
     template_name: str
     attributes: list[MetadataItemAttribute]
     archived: bool
-
-    class Config:
-        extra = Extra.ignore
 
 
 class MetadataItemSizeUsageDataset(BaseModel):
@@ -61,3 +73,10 @@ class MetadataItemSizeUsage(BaseModel):
 
     labels: list[str]
     datasets: list[MetadataItemSizeUsageDataset]
+
+
+class MetadataItemSizeStatistics(BaseModel):
+    """Metadata item size statistics model."""
+
+    count: int
+    size: int

@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from typing import Any
+from typing import get_args
 
 from faker import Faker
 
@@ -38,7 +39,7 @@ class BaseFactory:
             if name == 'pk':
                 continue
 
-            if field is not str:
+            if str not in get_args(field):
                 continue
 
             properties[name] = {

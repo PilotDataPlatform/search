@@ -18,6 +18,8 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
+from search.components.types import StrEnum
+
 Model = TypeVar('Model', bound=BaseModel)
 
 
@@ -38,3 +40,15 @@ class ModelList(list):
             results[key] = source
 
         return results
+
+    def get_field_values(self, field: str) -> list[Any]:
+        """Return list with values each model has in field attribute."""
+
+        return [getattr(source, field) for source in self]
+
+
+class ContainerType(StrEnum):
+    """Available container types."""
+
+    PROJECT = 'project'
+    DATASET = 'dataset'

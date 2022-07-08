@@ -34,3 +34,16 @@ class TestModelList:
         }
 
         assert models.map_by_field('id', str) == expected_map
+
+    def test_get_field_values_returns_list_with_values_each_model_has_in_field_attribute(self, fake):
+        class Model(BaseModel):
+            key: str
+
+        model_1 = Model(key=fake.word())
+        model_2 = Model(key=fake.word())
+
+        models = ModelList([model_1, model_2])
+
+        expected_list = [model_1.key, model_2.key]
+
+        assert models.get_field_values('key') == expected_list

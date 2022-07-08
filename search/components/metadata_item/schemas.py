@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from search.components.models import ContainerType
 from search.components.pagination import PageType
 from search.components.schemas import BaseSchema
 from search.components.schemas import ListResponseSchema
@@ -39,7 +40,7 @@ class MetadataItemSchema(BaseSchema):
     size: int
     owner: str
     container_code: str
-    container_type: str
+    container_type: ContainerType
     created_time: datetime
     last_updated_time: datetime
     tags: list[str]

@@ -19,9 +19,12 @@ from search.components.crud import CRUD
 from search.components.metadata_item.crud.size_usage import SizeUsageHandler
 from search.components.metadata_item.filtering import MetadataItemProjectSizeUsageFiltering
 from search.components.metadata_item.models import MetadataItem
+from search.components.metadata_item.models import MetadataItemSizeStatistics
 from search.components.metadata_item.models import MetadataItemSizeUsage
+from search.components.metadata_item.models import MetadataItemType
+from search.components.metadata_item.models import SizeGroupBy
 from search.components.metadata_item.pagination import MetadataItemPage
-from search.components.metadata_item.types import SizeGroupBy
+from search.components.models import ContainerType
 from search.components.pagination import Pagination
 from search.components.search_query import SearchQuery
 
@@ -73,3 +76,21 @@ class MetadataItemCRUD(CRUD):
         result = await self._search(query=query, size=0, aggregations=aggregations)
 
         return size_usage_handler.process_search_result(result)
+
+    async def get_project_statistics(self, project_code: str) -> MetadataItemSizeStatistics:
+        """Get aggregated project files statistics."""
+
+        search_query = SearchQuery()
+        search_query.match_term('type', MetadataItemType.FILE.value)
+        search_query.match_term('container_type', ContainerType.PROJECT.value)
+        search_query.match_term('container_code', project_code)
+        query = search_query.build()
+
+        aggregations = {'total_size': {'sum': {'field': 'size'}}}
+
+        result = await self._search(query=query, size=0, aggregations=aggregations)
+
+        count = result['hits']['total']['value']
+        size = int(result['aggregations']['total_size']['value'])
+
+        return MetadataItemSizeStatistics(count=count, size=size)

@@ -38,6 +38,9 @@ class SearchQuery:
     def match_term(self, field: str, value: str | int | bool) -> None:
         self.must.append({'term': {field: value}})
 
+    def match_multiple_terms(self, field: str, value: list[str | int]) -> None:
+        self.must.append({'terms': {field: value}})
+
     def build(self) -> dict[str, Any]:
         if not self.must:
             return {'match_all': {}}
