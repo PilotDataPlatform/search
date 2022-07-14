@@ -33,8 +33,8 @@ class DatasetActivitySchema(BaseSchema):
     activity_type: str
     activity_time: datetime
     container_code: str
-    version: str
-    target_name: str
+    version: str | None
+    target_name: str | None
     user: str
     changes: list[DatasetActivityChangeSchema]
 
