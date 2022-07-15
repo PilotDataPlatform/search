@@ -16,6 +16,9 @@
 from datetime import datetime
 
 from search.components.crud import CRUD
+from search.components.item_activity.crud.file_activity import FileActivityHandler
+from search.components.item_activity.filtering import ItemActivityProjectFileActivityFiltering
+from search.components.item_activity.models import ActivityGroupBy
 from search.components.item_activity.models import ItemActivity
 from search.components.item_activity.models import ItemActivityTransferStatistics
 from search.components.item_activity.models import ItemActivityType
@@ -58,7 +61,7 @@ class ItemActivityCRUD(CRUD):
 
         for bucket in result['aggregations']['activity_types']['buckets']:
             try:
-                mapping[bucket['key']] += 1
+                mapping[bucket['key']] += bucket['doc_count']
             except KeyError:
                 pass
 
@@ -66,3 +69,21 @@ class ItemActivityCRUD(CRUD):
             uploaded=mapping[ItemActivityType.UPLOAD],
             downloaded=mapping[ItemActivityType.DOWNLOAD],
         )
+
+    async def get_project_file_activity(
+        self, filtering: ItemActivityProjectFileActivityFiltering, time_zone: str, group_by: ActivityGroupBy
+    ) -> dict[str, int]:
+        """Get aggregated project file activity filtered by dates and grouped into separate buckets."""
+
+        search_query = SearchQuery()
+        filtering.apply(search_query)
+        query = search_query.build()
+
+        file_activity_handler = FileActivityHandler(
+            from_date=filtering.from_date, to_date=filtering.to_date, time_zone=time_zone, group_by=group_by
+        )
+        aggregations = file_activity_handler.get_aggregations()
+
+        result = await self._search(query=query, size=0, aggregations=aggregations)
+
+        return file_activity_handler.process_search_result(result)

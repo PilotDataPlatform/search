@@ -55,3 +55,9 @@ class ProjectFilesStatisticsResponseSchema(BaseSchema):
 
     files: ProjectFilesTotalStatistics
     activity: ProjectFilesTodayActivity
+
+
+class ProjectFilesActivityResponseSchema(BaseSchema):
+    """Default schema for project files activity response."""
+
+    data: dict[str, int]

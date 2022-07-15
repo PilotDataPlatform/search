@@ -21,6 +21,12 @@ from search.components.models import ContainerType
 from search.components.types import StrEnum
 
 
+class ActivityGroupBy(StrEnum):
+    """Store possible group by options for item activities."""
+
+    DAY = 'day'
+
+
 class ItemActivityType(StrEnum):
     """Store all available item activity types."""
 

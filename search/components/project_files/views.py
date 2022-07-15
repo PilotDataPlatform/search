@@ -21,11 +21,14 @@ from fastapi import Query
 
 from search.components.item_activity.crud import ItemActivityCRUD
 from search.components.item_activity.dependencies import get_item_activity_crud
+from search.components.item_activity.filtering import ItemActivityProjectFileActivityFiltering
 from search.components.metadata_item.crud import MetadataItemCRUD
 from search.components.metadata_item.dependencies import get_metadata_item_crud
 from search.components.metadata_item.filtering import MetadataItemProjectSizeUsageFiltering
 from search.components.project_files.parameters import TIME_ZONE_REGEX
+from search.components.project_files.parameters import ProjectFilesActivityParameters
 from search.components.project_files.parameters import ProjectFilesSizeParameters
+from search.components.project_files.schemas import ProjectFilesActivityResponseSchema
 from search.components.project_files.schemas import ProjectFilesSizeResponseSchema
 from search.components.project_files.schemas import ProjectFilesSizeSchema
 from search.components.project_files.schemas import ProjectFilesStatisticsResponseSchema
@@ -84,3 +87,29 @@ async def get_project_statistics(
             today_downloaded=transfer_statistics.downloaded,
         ),
     )
+
+
+@router.get(
+    '/{project_code}/activity',
+    summary='Get file activity in the project.',
+    response_model=ProjectFilesActivityResponseSchema,
+)
+async def get_project_file_activity(
+    project_code: str,
+    parameters: ProjectFilesActivityParameters = Depends(),
+    item_activity_crud: ItemActivityCRUD = Depends(get_item_activity_crud),
+) -> ProjectFilesActivityResponseSchema:
+    """Get file activity in a project for the period."""
+
+    filtering = ItemActivityProjectFileActivityFiltering(
+        project_code=project_code,
+        activity_type=parameters.activity_type,
+        from_date=parameters.from_date,
+        to_date=parameters.to_date,
+    )
+
+    project_file_activity = await item_activity_crud.get_project_file_activity(
+        filtering, parameters.time_zone, parameters.group_by
+    )
+
+    return ProjectFilesActivityResponseSchema(data=project_file_activity)
