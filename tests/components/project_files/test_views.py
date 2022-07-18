@@ -29,7 +29,8 @@ class TestProjectFilesViews:
         to_date = (created_metadata_item.created_time + timedelta(days=1)).isoformat()
 
         response = await client.get(
-            f'/v1/project-files/{created_metadata_item.container_code}/size', params={'from': from_date, 'to': to_date}
+            f'/v1/project-files/{created_metadata_item.container_code}/size',
+            params={'from': from_date, 'to': to_date, 'time_zone': '+00:00'},
         )
 
         assert response.status_code == 200
@@ -40,7 +41,7 @@ class TestProjectFilesViews:
         assert received_zone == created_metadata_item.zone
 
     async def test_get_project_statistics_returns_files_and_transfer_activity_statistics(
-        self, fake, client, jq, metadata_item_factory, item_activity_factory
+        self, fake, client, metadata_item_factory, item_activity_factory
     ):
         project_code = fake.word().lower()
         time = datetime.utcnow()
@@ -63,6 +64,29 @@ class TestProjectFilesViews:
         }
 
         response = await client.get(f'/v1/project-files/{project_code}/statistics', params={'time_zone': '+00:00'})
+
+        assert response.status_code == 200
+
+        assert response.json() == expected_response
+
+    async def test_get_project_file_activity_returns_project_activity_datasets_grouped_by_day(
+        self, client, item_activity_factory
+    ):
+        created_item_activity = await item_activity_factory.create()
+        from_date = created_item_activity.activity_time.isoformat()
+        to_date = (created_item_activity.activity_time + timedelta(days=1)).isoformat()
+
+        expected_response = {'data': {created_item_activity.activity_time.strftime('%Y-%m-%d'): 1}}
+
+        response = await client.get(
+            f'/v1/project-files/{created_item_activity.container_code}/activity',
+            params={
+                'type': created_item_activity.activity_type.value,
+                'from': from_date,
+                'to': to_date,
+                'time_zone': '+00:00',
+            },
+        )
 
         assert response.status_code == 200
 

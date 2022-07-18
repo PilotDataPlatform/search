@@ -56,7 +56,7 @@ class DatasetActivityFactory(BaseFactory):
             target_name = '.'.join(self.fake.words(3)).lower()
 
         if user is ...:
-            user = f'{self.fake.pystr()}-{self.fake.first_name()}'.lower()
+            user = f'{self.fake.pystr()}_{self.fake.first_name()}'.lower()
 
         if changes is ...:
             changes = []

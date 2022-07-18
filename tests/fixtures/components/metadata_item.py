@@ -64,7 +64,7 @@ class MetadataItemFactory(BaseFactory):
             zone = self.fake.pyint(0, 1)
 
         if name is ...:
-            name = f'{unique_prefix}-{self.fake.file_name()}'.lower()
+            name = f'{unique_prefix}_{self.fake.file_name()}'.lower()
 
         if size is ...:
             size = self.fake.pyint()
@@ -72,7 +72,7 @@ class MetadataItemFactory(BaseFactory):
                 size = 0
 
         if owner is ...:
-            owner = f'{unique_prefix}-{self.fake.first_name()}'.lower()
+            owner = f'{unique_prefix}_{self.fake.first_name()}'.lower()
 
         if container_code is ...:
             container_code = self.fake.word().lower()
