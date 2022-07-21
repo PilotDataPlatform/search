@@ -81,6 +81,7 @@ async def get_project_statistics(
         files=ProjectFilesTotalStatistics(
             total_count=statistics.count,
             total_size=statistics.size,
+            total_per_zone=statistics.count_by_zone,
         ),
         activity=ProjectFilesTodayActivity(
             today_uploaded=transfer_statistics.uploaded,

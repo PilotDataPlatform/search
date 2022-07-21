@@ -41,6 +41,7 @@ class ProjectFilesTotalStatistics(BaseSchema):
 
     total_count: int
     total_size: int
+    total_per_zone: dict[int, int]
 
 
 class ProjectFilesTodayActivity(BaseSchema):

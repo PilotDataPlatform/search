@@ -35,13 +35,23 @@ class MetadataItemCRUD(CRUD):
     index = 'metadata-items'
     model = MetadataItem
 
+    def _get_group_by_zone_aggregation(self) -> dict[str, Any]:
+        """Get aggregation for grouping by zone."""
+
+        return {'terms': {'field': 'zone'}}
+
+    def _process_group_by_zone_aggregation(self, aggregation: dict[str, Any]) -> dict[int, int]:
+        """Process grouping by zone aggregation results."""
+
+        return {bucket['key']: bucket['doc_count'] for bucket in aggregation['buckets']}
+
     async def _list(self, **kwds: Any) -> dict[str, Any]:
         """Get a list of entries by executing a search.
 
-        Add extra total_per_zone aggregation that applies same query per by zone.
+        Add extra total_per_zone aggregation that applies same query per each zone.
         """
 
-        aggregations = {'total_per_zone': {'terms': {'field': 'zone'}}}
+        aggregations = {'total_per_zone': self._get_group_by_zone_aggregation()}
 
         return await self._search(aggregations=aggregations, **kwds)
 
@@ -53,9 +63,7 @@ class MetadataItemCRUD(CRUD):
 
         count = result['hits']['total']['value']
         entries = self._parse_documents(result['hits']['hits'])
-        total_per_zone = {
-            bucket['key']: bucket['doc_count'] for bucket in result['aggregations']['total_per_zone']['buckets']
-        }
+        total_per_zone = self._process_group_by_zone_aggregation(result['aggregations']['total_per_zone'])
 
         return MetadataItemPage(pagination=pagination, count=count, entries=entries, total_per_zone=total_per_zone)
 
@@ -86,11 +94,15 @@ class MetadataItemCRUD(CRUD):
         search_query.match_term('container_code', project_code)
         query = search_query.build()
 
-        aggregations = {'total_size': {'sum': {'field': 'size'}}}
+        aggregations = {
+            'size': {'sum': {'field': 'size'}},
+            'zone': self._get_group_by_zone_aggregation(),
+        }
 
         result = await self._search(query=query, size=0, aggregations=aggregations)
 
         count = result['hits']['total']['value']
-        size = int(result['aggregations']['total_size']['value'])
+        size = int(result['aggregations']['size']['value'])
+        count_by_zone = self._process_group_by_zone_aggregation(result['aggregations']['zone'])
 
-        return MetadataItemSizeStatistics(count=count, size=size)
+        return MetadataItemSizeStatistics(count=count, size=size, count_by_zone=count_by_zone)
