@@ -56,6 +56,7 @@ class TestProjectFilesViews:
             'files': {
                 'total_count': 1,
                 'total_size': created_metadata_item.size,
+                'total_per_zone': {str(created_metadata_item.zone): 1},
             },
             'activity': {
                 'today_uploaded': 1,
