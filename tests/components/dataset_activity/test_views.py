@@ -140,3 +140,26 @@ class TestDatasetActivityLogsViews:
 
         assert received_ccs == [str(dataset_activity.container_code)]
         assert received_total == 1
+
+    async def test_list_dataset_activities_works_with_null_values_correctly(
+        self, client, jq, fake, dataset_activity_factory
+    ):
+        await dataset_activity_factory.create(target_name=None)
+        await dataset_activity_factory.create(version=None)
+        changes = {'property': 'test', 'old_value': None, 'new_value': None}
+        await dataset_activity_factory.create(changes=[changes])
+
+        response = await client.get('/v1/dataset-activity-logs/')
+        assert response.status_code == 200
+
+        body = jq(response)
+        received_total = body('.total').first()
+        assert received_total == 3
+
+        targets = body('.result[].target_name').all()
+        versions = body('.result[].version').all()
+        changes_res = body('.result[].changes').all()
+
+        assert None in targets
+        assert None in versions
+        assert [changes] in changes_res

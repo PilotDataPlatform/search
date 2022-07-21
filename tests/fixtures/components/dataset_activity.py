@@ -47,7 +47,7 @@ class DatasetActivityFactory(BaseFactory):
             activity_time = self.fake.past_datetime()
 
         if container_code is ...:
-            container_code = self.fake.unique.word().lower()
+            container_code = self.fake.unique.word().lower() + self.fake.unique.word().lower()
 
         if version is ...:
             version = f'{self.fake.pyint(0, 4)}.{self.fake.pyint(0, 20)}'
