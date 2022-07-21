@@ -22,8 +22,8 @@ class DatasetActivityChange(BaseModel):
     """Dataset activity change model."""
 
     property: str
-    old_value: str
-    new_value: str
+    old_value: str | None
+    new_value: str | None
 
 
 class DatasetActivity(BaseModel):

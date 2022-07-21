@@ -23,8 +23,8 @@ class DatasetActivityChangeSchema(BaseSchema):
     """Dataset activity change schema."""
 
     property: str
-    old_value: str
-    new_value: str
+    old_value: str | None
+    new_value: str | None
 
 
 class DatasetActivitySchema(BaseSchema):
