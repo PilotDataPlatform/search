@@ -80,3 +80,4 @@ class MetadataItemSizeStatistics(BaseModel):
 
     count: int
     size: int
+    count_by_zone: dict[int, int]

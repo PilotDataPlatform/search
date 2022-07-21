@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from collections import Counter
+
 from dateutil.relativedelta import relativedelta
 
 from search.components.metadata_item.filtering import MetadataItemProjectSizeUsageFiltering
@@ -132,7 +134,8 @@ class TestMetadataItemCRUD:
             3, type_=MetadataItemType.FILE, container_code=project_code, size=fake.pyint(1024**2, 1024**3)
         )
         expected_size = sum(item.size for item in created_metadata_items)
+        count_by_zone = Counter(item.zone for item in created_metadata_items)
 
         result = await metadata_item_crud.get_project_statistics(project_code)
 
-        assert result == MetadataItemSizeStatistics(count=3, size=expected_size)
+        assert result == MetadataItemSizeStatistics(count=3, size=expected_size, count_by_zone=count_by_zone)
